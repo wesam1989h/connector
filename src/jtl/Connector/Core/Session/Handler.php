@@ -53,7 +53,12 @@ abstract class Handler
         $this->_db = $db;
         
         ini_set("session.gc_probability", 25);
-        
+
+        if(session_status() === \PHP_SESSION_ACTIVE) {
+            Logger::write(sprintf('Unknown session with id (%s) destroyed', session_id()), Logger::WARNING, 'session');
+            session_destroy();
+        }
+
         session_name($sessionName);
         if ($sessionId !== null) {
             if ($this->check($sessionId)) {
